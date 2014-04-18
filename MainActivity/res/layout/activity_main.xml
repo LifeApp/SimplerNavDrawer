@@ -24,6 +24,8 @@
 
     <!-- As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions. -->
+    <!-- This is the main content frame, this is the frame 
+         that gets replaced by the fragments. -->
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"

@@ -38,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -67,6 +68,8 @@ import android.widget.Toast;
  * An action should be an operation performed on the current contents of the window,
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
+
+
 public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -121,6 +124,70 @@ public class MainActivity extends Activity {
         if (savedInstanceState == null) {
             selectItem(0);
         }
+    }
+    
+    //Scales all contents in a given view to fill the entire screen no matter the resolution
+    public void scaleContents(View rootView, View container)
+    {
+    	//This part computes the scaling ratio
+    	float xScale = (float)container.getWidth()/rootView.getWidth();
+    	float yScale = (float)container.getHeight()/rootView.getHeight();
+    	float scale = Math.min(xScale, yScale);
+    	
+    	//Calls on following method to sclae the current view and the child views 
+    	scaleViewAndChildren(rootView,scale);    	
+    }
+    
+    //Scale the given view and all of the children
+    public static void scaleViewAndChildren(View root, float scale)
+    {
+    	//Gets the current layouts information
+    	ViewGroup.LayoutParams layoutParams = root.getLayoutParams();
+    	
+    	//Scale the view itself
+    	//Scale width
+    	if(layoutParams.width != ViewGroup.LayoutParams.FILL_PARENT && layoutParams.width != ViewGroup.LayoutParams.WRAP_CONTENT)
+    	{
+    		layoutParams.width *= scale;
+    	}
+    	//Scale Height
+    	if(layoutParams.height != ViewGroup.LayoutParams.FILL_PARENT && layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT)
+    	{
+    		layoutParams.width *= scale;
+    	}
+    	
+    	//If there are margins in the layout, this scales those
+    	if(layoutParams instanceof ViewGroup.MarginLayoutParams)
+    	{
+    		ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) layoutParams;
+    		marginParams.leftMargin *= scale;
+    		marginParams.rightMargin *= scale;
+    		marginParams.topMargin *= scale;
+    		marginParams.bottomMargin *= scale;
+    	}
+    	
+    	//Replace set layout info with the new calculated info
+    	root.setLayoutParams(layoutParams);
+    	
+    	//Replaces the original margins with the newly scaled margins
+    	root.setPadding((int)(root.getPaddingLeft()*scale), (int)(root.getPaddingTop()*scale), (int)(root.getPaddingRight()*scale), (int)(root.getPaddingBottom()*scale));
+    	
+    	//If the view is a TextView, scale the size 
+    	if(root instanceof TextView)
+    	{
+    		TextView textView = (TextView)root;
+    		textView.setTextSize(textView.getTextSize()*scale);
+    	}
+    	
+    	//If the view is a ViewGroup Scale all of the children using recursion
+    	if(root instanceof ViewGroup)
+    	{
+    		ViewGroup groupView = (ViewGroup)root;
+    		for(int cnt = 0; cnt < groupView.getChildCount(); ++cnt)
+    		{
+    			scaleViewAndChildren(groupView.getChildAt(cnt),scale);
+    		}
+    	}    	
     }
 
     @Override
