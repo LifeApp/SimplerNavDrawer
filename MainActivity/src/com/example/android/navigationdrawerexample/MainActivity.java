@@ -235,7 +235,7 @@ public class MainActivity extends Activity {
             ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
             getActivity().setTitle(menu_item);
             return rootView;
-           
+          //testing 
         }
     }
 }
